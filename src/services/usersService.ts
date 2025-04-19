@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User } from '../types';
+import { UpdateResponse, User } from '../types';
 
 // Fetch all users
 export const fetchUsers = async (): Promise<User[]> => {
@@ -15,7 +15,7 @@ export const fetchUsers = async (): Promise<User[]> => {
 // Add a new user
 export const addUser = async (newUser: User): Promise<User> => {
     try {
-        const response = await axios.post<User>('http://localhost:9000/api/Users', newUser);
+        const response = await axios.post<User>('http://localhost:9000/api/users', newUser);
         if (response.status !== 200 && response.status !== 201) {
             throw new Error('Failed to add user');
         }
@@ -39,6 +39,23 @@ export const LogIn = async (email: string, password: string): Promise<User> => {
         throw error;
     }
 };
+
+export const updateUser = async (user: User): Promise<UpdateResponse> => {
+    try {
+        const response = await axios.put<UpdateResponse>(
+            `http://localhost:9000/api/Users/${user._id}`,
+            user,
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+        if (response.status !== 200) {
+            throw new Error('Failed to update user');
+        }
+        return response.data;
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw error; 
+    }
+}
 
 /* 
 //PODEM FERHO COM UNA PROMESA

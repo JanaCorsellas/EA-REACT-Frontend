@@ -1,9 +1,18 @@
 export interface User {
+    _id?: string;
     name: string;
     age: number;
     email?: string;
     password?: string;
     phone?: number;
+}
+
+export interface UpdateResponse {
+    acknowledged: boolean;
+    modifiedCount: number;
+    upsertedCount: number;
+    matchedCount: number;
+    upsertedId: null | string;
 }
 
 

@@ -3,7 +3,7 @@ import './App.css';
 import { User } from './types';
 import Form from './components/Form';
 import UsersList from './components/UsersList';
-import { fetchUsers, LogIn } from './services/usersService';
+import { fetchUsers, LogIn, updateUser } from './services/usersService';
 import Login from './components/Login';
 
 interface AppState {
@@ -95,6 +95,23 @@ function App() {
         }
     };
 
+    const handleUserUpdate = async (updatedUser: User) => {
+        try {
+            console.log('Sending to backend:', updatedUser);
+            const updated = await updateUser(updatedUser) as any;
+            console.log('Received from backend:', updated);
+            if (updated.matchedCount === 1) {
+                setUsers(prevUsers => 
+                    prevUsers.map(user => 
+                        user._id === updatedUser._id ? {...updatedUser} : user
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    };
+
     return (
         <div className="App" ref={divRef}>
             {/* Notification Popup */}
@@ -116,7 +133,7 @@ function App() {
                 ) : (
                     <>
                         <h2>Bienvenido, {currentUser?.name}!</h2>
-                        <UsersList users={users} />
+                        <UsersList users={users} onUserUpdate={handleUserUpdate} />
                         <p>New users: {newUsersNumber}</p>
                         <Form onNewUser={handleNewUser} />
                     </>
